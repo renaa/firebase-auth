@@ -5,6 +5,7 @@
         <div class="card">
           <div class="card-header">Register</div>
           <div class="card-body">
+            
             <div v-if="error" class="alert alert-danger">{{error}}</div>
             <form action="#" @submit.prevent="submit">
               <div class="form-group row">
@@ -70,28 +71,38 @@
 </template>
 
 <script>
-import firebase from 'firebase'
+import * as firebase from "firebase/app";
+import "firebase/auth";
+
 export default {
   data() {
     return {
       form: {
-        name: '',
-        email: '',
-        password: '',
+        name: "",
+        email: "",
+        password: ""
       },
       error: null
-    }
+    };
   },
   methods: {
     submit() {
-      firebase.auth().createUserWithEmailAndPassword(this.form.email, this.form.password)
-        .then( data => {
-          data.user.updateProfile({
-            displayName: this.form.name
-          })
-          .then(() => {})
+      this.error = ''
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(this.form.email, this.form.password)
+        .then(data => {
+          data.user
+            .updateProfile({
+              displayName: this.form.name
+            })
+            .then(() => {
+              
+            });
         })
-        .cathch(e => this.error = e.message)
+        .catch(err => {
+          this.error = err.message;
+        });
     }
   }
 };
